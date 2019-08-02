@@ -239,7 +239,7 @@ void chip8::emulateCycle() {
         case 0xB000:
             // Jump to location nnn + V0
             printf("JP V0, nnn\n");
-            pc = V[0x0] = nnn;
+            pc = V[0x0] + nnn;
         break;
 
         case 0xC000:
@@ -302,6 +302,7 @@ void chip8::emulateCycle() {
                 case 0x0007:
                     // Set Vx = delay timer value
                     printf("LD V%X, DT\n", x);
+                    V[x] = delay_timer;
                     pc += 2;
                 break;
 
