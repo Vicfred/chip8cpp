@@ -287,6 +287,98 @@ void chip8::emulateCycle() {
             }
         break;
 
+        case 0xF000:
+            switch(kk) {
+                case 0x0007:
+                    // Set Vx = delay timer value
+                    printf("LD V%X, DT\n", x);
+                    pc += 2;
+                break;
+
+                case 0x000A: {
+                    // Wait for a key press, store the value of the key in Vx
+                    printf("LD V%X, K\n", x);
+                    bool keyPress = false;
+                    for(int i = 0; i < 16; ++i) {
+                        if(0 != key[i]) {
+                            V[x] = i;
+                            keyPress = true;
+                        }
+                    }
+                    // If we didn't received a keypress, skip this cycle and try again
+                    if(!keyPress)
+                        return;
+                    pc += 2;
+                }
+                break;
+
+                case 0x0015:
+                    // Set delay timer = Vx.
+                    printf("LD DT, V%X\n", x);
+                    delay_timer = V[x];
+                    pc += 2;
+                break;
+
+                case 0x0018:
+                    //  Set sound timer = Vx
+                    printf("LD ST, V%X\n", x);
+                    sound_timer = V[x];
+                    pc += 2;
+                break;
+
+                case 0x001E:
+                    // Set I = I + Vx
+                    printf("ADD I, V%X\n", x);
+                    if(I + V[x] > 0xFFF) // VF is set to 1 when range overflow (I+VX>0xFFF), and 0 when there isn't
+                        V[0xF] = 1;
+                    else
+                        V[0xF] = 0;
+                    I += V[x];
+                    pc += 2;
+                break;
+
+                case 0x0029:
+                    // Set I = location of sprite for digit Vx
+                    // Characters 0-F (in hexadecimal) are represented by a 4x5 font
+                    printf("LD F, V%X\n", x);
+                    I = V[x] * 0x5;
+                    pc += 2;
+                break;
+
+                case 0x0033:
+                    // Store BCD representation of Vx in memory locations I, I+1, and I+2
+                    printf("LD B, V%X\n", x);
+                    memory[I] = V[x]/10;
+                    memory[I+1] = (V[x]/10)%10;
+                    memory[I+2] = (V[x]%100)%10;
+                    pc += 2;
+                break;
+
+                case 0x0055:
+                    // Store registers V0 through Vx in memory starting at location I
+                    printf("LD [I], V%X\n", x);
+                    for(int i = 0; i <= x; ++i)
+                        memory[I+i] = V[i];
+                    // On the original interpreter, when the operation is done, I = I + X + 1
+                    I += x + 1;
+                    pc += 2;
+                break;
+
+                case 0x0065:
+                    // Read registers V0 through Vx from memory starting at location I
+                    printf("LD V%X, [I]", x);
+                    for(int i = 0; i <= x; ++i)
+                        V[i] = memory[I+i];
+                    // On the original interpreter, when the operation is done, I = I + X + 1
+                    I += x + 1;
+                    pc += 2;
+                break;
+
+                default:
+                    printf("Unknown opcode [0xF000]: 0x%X\n", opcode);
+            }
+        break;
+
         default:
             printf("Unknown opcode: 0x%X\n", opcode);
     }
