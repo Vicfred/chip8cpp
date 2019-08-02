@@ -244,7 +244,7 @@ void chip8::emulateCycle() {
 
         case 0xC000:
             // Sets Vx to a random number AND kk
-            printf("RND V%X, %X", x, kk);
+            printf("RND V%X, %X\n", x, kk);
             V[x] = (rand() % 0xFF) & kk;
             pc += 2;
         break;
@@ -255,11 +255,36 @@ void chip8::emulateCycle() {
             // I value doesn't change after the execution of this instruction.
             // VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn,
             // and to 0 if that doesn't happen
-            printf("DRW V%X, V%X, %X", x, y, n);
+            printf("DRW V%X, V%X, %X\n", x, y, n);
             V[0xF] = 0;
             // TODO implement
             drawFlag = true;
             pc += 2;
+        break;
+
+        case 0xE000:
+            switch(kk) {
+                case 0x009E:
+                    // Skip next instruction if key with the value of Vx is pressed
+                    printf("SKP V%X\n", x);
+                    if(0 != key[V[x]])
+                    pc += 4;
+                    else
+                    pc += 2;
+                break;
+
+                case 0x00A1:
+                    // Skip next instruction if key with the value of Vx isn't pressed
+                    printf("SKP V%X\n", x);
+                    if(0 == key[V[x]])
+                        pc += 4;
+                    else
+                        pc += 2;
+                break;
+
+                default:
+                    printf("Unknown opcode [0xE000]: 0x%X\n", opcode);
+            }
         break;
 
         default:
