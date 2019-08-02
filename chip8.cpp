@@ -92,3 +92,11 @@ bool chip8::loadRom(const char *filename) {
 
     return true;
 }
+
+void chip8::debugMemory() {
+    for(int idx = 1; idx <= 4096; ++idx) {
+        printf("%02x\t", memory[idx-1]);
+        if(idx % 32 == 0)
+            printf("\n");
+    }
+}
