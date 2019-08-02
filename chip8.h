@@ -1,7 +1,20 @@
-#include <iostream>
 #include <cstdint>
 
 class chip8 {
+public:
+    chip8();
+    ~chip8();
+
+    bool drawFlag;
+
+    void emulateCycle();
+    void debugRender();
+    bool loadRom(const char *filename);
+
+    uint8_t gfx[64*32];     // Total amount of pixels: 2048
+    uint8_t key[16];
+
+private:
     uint16_t pc;            // Program counter
     uint16_t opcode;        // Current opcode
     uint16_t sp;            // Stack pointer
@@ -13,9 +26,6 @@ class chip8 {
 
     uint8_t delay_timer;
     uint8_t sound_timer;
-};
 
-int main() {
-    std::cout << "olis olis" << std::endl;
-    return 0;
-}
+    void init();
+};
