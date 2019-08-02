@@ -256,8 +256,18 @@ void chip8::emulateCycle() {
             // VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn,
             // and to 0 if that doesn't happen
             printf("DRW V%X, V%X, %X\n", x, y, n);
+            uint8_t pixel;
             V[0xF] = 0;
-            // TODO implement
+            for(int yline = 0; yline < n; yline++) {
+                pixel = memory[I + yline];
+                for(int xline = 0; xline < 8; xline++) {
+                    if(0 != (pixel & (0x80 >> xline))) {
+                        if(1 == gfx[x + xline + ((y + yline) * 64)])
+                            V[0xF] = 1;
+                        gfx[x + xline + ((y + yline) * 64)] ^= 1;
+                    }
+                }
+            }
             drawFlag = true;
             pc += 2;
         break;
