@@ -392,6 +392,15 @@ void chip8::emulateCycle() {
         default:
             printf("Unknown opcode: 0x%X\n", opcode);
     }
+
+    // Update timers
+    if(delay_timer > 0)
+        --delay_timer;
+    if(sound_timer > 0) {
+        if(1 == sound_timer)
+            printf("BEEP\n");
+        --sound_timer;
+    }
 }
 
 bool chip8::loadRom(const char *filename) {
