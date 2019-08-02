@@ -46,7 +46,7 @@ void chip8::emulateCycle() {
     // Fetch opcode
     opcode = memory[pc] << 8 | memory[pc + 1];
 
-    uint16_t    nnn = opcode & 0x0FFF; // lowest 12 bits
+    uint16_t nnn = opcode & 0x0FFF; // lowest 12 bits
 
     uint8_t n   = opcode & 0x000F; // lowest 4 bits
     uint8_t kk  = opcode & 0x00FF; // lowest 8 bits
