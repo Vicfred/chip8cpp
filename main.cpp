@@ -24,6 +24,8 @@ int main(int argc, char **argv) {
                                         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
     );
 
+    printf("SDL Error: %s\n", SDL_GetError());
+
     SDL_Renderer *rnd = SDL_CreateRenderer(win, -1, SDL_RENDERER_SOFTWARE);
     SDL_SetRenderDrawColor(rnd, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(rnd);
