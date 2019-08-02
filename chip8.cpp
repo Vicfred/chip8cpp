@@ -9,7 +9,8 @@ void chip8::init() {
     opcode = I = sp = 0x00;
 
     // Clear the stack
-    memset(stack, 0, 16);
+    for (int i = 0; i < 16; ++i)
+        stack[i] = 0;
 
     // Clear the registers
     memset(V, 0, 16);
@@ -427,4 +428,9 @@ void chip8::debugMemory() {
         if(idx % 32 == 0)
             printf("\n");
     }
+}
+
+void chip8::debugStack() {
+    for(int idx = 0; idx < 16; ++idx)
+        printf("%02x\t", stack[idx]);
 }

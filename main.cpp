@@ -13,5 +13,6 @@ int main(int argc, char **argv) {
     if(!momoko.loadRom(argv[1]))
         return 1;
     momoko.debugMemory();
+    momoko.debugStack();
     return 0;
 }

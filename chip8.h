@@ -10,6 +10,7 @@ public:
     void emulateCycle();
     void debugRender();
     void debugMemory();
+    void debugStack();
     bool loadRom(const char *filename);
 
     uint8_t gfx[64*32];     // Total amount of pixels: 2048
