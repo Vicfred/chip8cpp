@@ -96,28 +96,19 @@ void chip8::emulateCycle() {
         case 0x3000:
             // Skip next instruction if Vx == kk
             printf("SE V%X, %X\n", x, kk);
-            if(V[x] == kk)
-                pc += 4;
-            else
-                pc += 2;
+            pc = (V[x] == kk) ? 4 : 2;
         break;
 
         case 0x4000:
             // Skip next instruction if Vx != kk
             printf("SNE V%X, %X\n", x, kk);
-            if(V[x] != kk)
-                pc += 4;
-            else
-                pc += 2;
+            pc = (V[x] != kk) ? 4 : 2;
         break;
 
         case 0x5000:
             // Skip next instruction if Vx == Vy
             printf("SE V%X, V%X\n", x, y);
-            if(V[x] == V[y])
-                pc += 4;
-            else
-                pc += 2;
+            pc = (V[x] == V[y]) ? 4 : 2;
         break;
 
         case 0x6000:
@@ -167,10 +158,7 @@ void chip8::emulateCycle() {
                 case 0x0004:
                     // Set Vx = Vx + Vy, set VF = carry
                     printf("ADD V%X, V%X\n", x, y);
-                    if(V[y] > (0xFF - V[x]))
-                        V[0xF] = 1;
-                    else
-                        V[0xF] = 0;
+                    V[0xF] = (V[y] > (0xFF - V[x])) ? 1 : 0;
                     V[x] += V[y];
                     pc += 2;
                 break;
@@ -178,10 +166,7 @@ void chip8::emulateCycle() {
                 case 0x0005:
                     // Set Vx = Vx - Vy, set VF = NOT borrow
                     printf("SUB V%X, V%X\n", x, y);
-                    if(V[y] > V[x])
-                        V[0xF] = 0; // There is borrow
-                    else
-                        V[0xF] = 1;
+                    V[0xF] = (V[y] > V[x]) ? 0 : 1;
                     V[x] -= V[y];
                     pc += 2;
                 break;
@@ -198,10 +183,7 @@ void chip8::emulateCycle() {
                 case 0x0007:
                     // Set Vx = Vy - Vx, set VF = NOT borrow
                     printf("SUBN V%X, V%X\n", x, y);
-                    if(V[x] > V[y])
-                        V[0xF] = 0; // There is a borrow
-                    else
-                        V[0xF] = 1;
+                    V[0xF] = (V[x] > V[y]) ? 0 : 1;
                     V[x] = V[y] - V[x];
                     pc += 2;
                 break;
@@ -223,10 +205,7 @@ void chip8::emulateCycle() {
         case 0x9000:
             // Skip next instruction if Vx != Vy
             printf("SNE V%X, V%X\n", x, y);
-            if(V[x] != V[y])
-                pc += 4;
-            else
-                pc += 2;
+            pc = (V[x] != V[y]) ? 4 : 2;
         break;
 
         case 0xA000:
@@ -277,19 +256,13 @@ void chip8::emulateCycle() {
                 case 0x009E:
                     // Skip next instruction if key with the value of Vx is pressed
                     printf("SKP V%X\n", x);
-                    if(0 != key[V[x]])
-                    pc += 4;
-                    else
-                    pc += 2;
+                    pc = (0 != key[V[x]]) ? 4 : 2;
                 break;
 
                 case 0x00A1:
                     // Skip next instruction if key with the value of Vx isn't pressed
                     printf("SKP V%X\n", x);
-                    if(0 == key[V[x]])
-                        pc += 4;
-                    else
-                        pc += 2;
+                    pc = (0 == key[V[x]]) ? 4 : 2;
                 break;
 
                 default:
@@ -340,10 +313,8 @@ void chip8::emulateCycle() {
                 case 0x001E:
                     // Set I = I + Vx
                     printf("ADD I, V%X\n", x);
-                    if(I + V[x] > 0xFFF) // VF is set to 1 when range overflow (I+VX>0xFFF), and 0 when there isn't
-                        V[0xF] = 1;
-                    else
-                        V[0xF] = 0;
+                    // VF is set to 1 when range overflow (I+VX>0xFFF), and 0 when there isn't
+                    V[0xF] = (I + V[x] > 0xFFF) ? 1 : 0;
                     I += V[x];
                     pc += 2;
                 break;
