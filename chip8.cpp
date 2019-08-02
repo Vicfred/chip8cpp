@@ -39,6 +39,9 @@ void chip8::init() {
     // TODO srand(time(NULL));
 }
 
+chip8::chip8() {} // Empty
+chip8::~chip8() {} // Empty
+
 void chip8::emulateCycle() {
     // Fetch opcode
     opcode = memory[pc] << 8 | memory[pc + 1];
