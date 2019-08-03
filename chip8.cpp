@@ -275,9 +275,9 @@ void chip8::emulateCycle() {
             uint8_t Y = V[y];
             uint8_t pixel;
             V[0xF] = 0;
-            for (int yline = 0; yline < n; yline++) {
+            for(int yline = 0; yline < n; yline++) {
                 pixel = memory[I + yline];
-                for (int xline = 0; xline < 8; xline++) {
+                for(int xline = 0; xline < 8; xline++) {
                     if (0 != (pixel & (0x80 >> xline))) {
                         if (1 == gfx[X + xline + ((Y + yline) * 64)]) {
                             V[0xF] = 1;
