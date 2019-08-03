@@ -264,27 +264,31 @@ void chip8::emulateCycle() {
             pc += 2;
         break;
 
-        case 0xD000:
+        case 0xD000: {
             // DXYN: Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels.
             // Each row of 8 pixels is read as bit-coded starting from memory location I;
             // I value doesn't change after the execution of this instruction.
             // VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn,
             // and to 0 if that doesn't happen
             printf("DRW V%X, V%X, %X\n", x, y, n);
+            uint8_t X = V[x];
+            uint8_t Y = V[y];
             uint8_t pixel;
             V[0xF] = 0;
-            for(int yline = 0; yline < n; yline++) {
+            for (int yline = 0; yline < n; yline++) {
                 pixel = memory[I + yline];
-                for(int xline = 0; xline < 8; xline++) {
-                    if(0 != (pixel & (0x80 >> xline))) {
-                        if(1 == gfx[x + xline + ((y + yline) * 64)])
+                for (int xline = 0; xline < 8; xline++) {
+                    if (0 != (pixel & (0x80 >> xline))) {
+                        if (1 == gfx[X + xline + ((Y + yline) * 64)]) {
                             V[0xF] = 1;
-                        gfx[x + xline + ((y + yline) * 64)] ^= 1;
+                        }
+                        gfx[X + xline + ((Y + yline) * 64)] ^= 1;
                     }
                 }
             }
             drawFlag = true;
             pc += 2;
+        }
         break;
 
         case 0xE000:
